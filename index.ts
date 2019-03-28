@@ -7,6 +7,13 @@ function addText(el, text) {
   el.appendChild(dataDiv);
 }
 
+function createContinaer(name) {
+  const d = document.createElement('div');
+  d.appendChild(document.createTextNode(name + ":"));
+  document.body.appendChild(d);
+  return d;
+}
+
 /////////
 // zip //
 /////////
@@ -17,9 +24,10 @@ function func_zip() {
   // emits (after all observables emit), so the value emitted from interval(1000) is delayed
   // by 1 second more
 
-  const zipDiv = document.getElementById('zip')
+  const d = createContinaer('zip');
+
   zip(interval(1000), interval(100))
-    .subscribe(values => addText(zipDiv, values.toString()))
+    .subscribe(values => addText(d, values.toString()))
 
 }
 
@@ -29,9 +37,10 @@ function func_zip() {
 
 function func_combineLatest() {
 
+  const d = createContinaer('combineLatest');
+
   // Emits when any observable emits but they all have to contain
   // data to start the initial emition, so the first emition is delayed
-  const combineLatestDiv = document.getElementById('combineLatestDiv')
 
   //timerOne emits first value at 1s, then once every 4s
   const timerOne = timer(1000, 4000);
@@ -43,7 +52,7 @@ function func_combineLatest() {
   const combined = combineLatest(timerOne, timerTwo, timerThree);
 
   const subscribe = combined.subscribe(
-    values => addText(combineLatestDiv, values.toString())
+    values => addText(d, values.toString())
   );
 }
 
@@ -53,12 +62,13 @@ function func_combineLatest() {
 
 function func_withLatestFrom() {
 
+  const d = createContinaer('withLatestFrom');
+
   //interval(5000) controls when to sample data from interval(1000)
   // we can say the interval(5000) is the master that takes data from the
   // slave. The slave MUST contain data in order to the emit some values.
 
-  const withLatestFromDiv = document.getElementById('withLatestFromDiv')
-  interval(5000).pipe(withLatestFrom(interval(1000))).subscribe(x => addText(withLatestFromDiv, x.toString()));
+  interval(5000).pipe(withLatestFrom(interval(1000))).subscribe(x => addText(d, x.toString()));
 
 }
 
@@ -67,10 +77,11 @@ function func_withLatestFrom() {
 /////////
 
 function func_iif() {
+
+  const d = createContinaer('iif');
+
   // iif accepts a condition function and two Observables. When an Observable
   // returned by the operator is subscribed, condition function will be called
-
-  const iifDiv = document.getElementById('iifDiv')
 
   const r$ = of('R');
   const x$ = of('X');
@@ -82,5 +93,5 @@ function func_iif() {
         r$,
         x$
       ))
-  ).subscribe(val => addText(iifDiv, val.toString()));
+  ).subscribe(val => addText(d, val.toString()));
 }
