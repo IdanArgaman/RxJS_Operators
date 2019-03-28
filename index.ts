@@ -1,5 +1,5 @@
 import { of, interval, zip, timer, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, withLatestFrom } from 'rxjs/operators';
 
 function addText(el, text) {
   const dataDiv = document.createElement('div')
@@ -16,12 +16,15 @@ function addText(el, text) {
 // by 1 second more
 
 const zipDiv = document.getElementById('zip')
-zip(interval(1000), interval(100)).subscribe(values => addText(zipDiv, values.toString()))
+zip(interval(1000), interval(100))
+//.subscribe(values => addText(zipDiv, values.toString()))
 
 ///////////////////
 // combineLatest //
 ///////////////////
 
+// Emits when any observable emits but they all have to contain
+// data to start the initial emition, so the first emition is delayed
 const combineLatestDiv = document.getElementById('combineLatestDiv')
 
 //timerOne emits first value at 1s, then once every 4s
@@ -32,6 +35,17 @@ const timerTwo = timer(2000, 4000)
 const timerThree = timer(3000, 4000)
 
 const combined = combineLatest(timerOne, timerTwo, timerThree);
-const subscribe = combined.subscribe(
-   values => addText(combineLatestDiv, values.toString()) 
-);
+
+// const subscribe = combined.subscribe(
+//    values => addText(combineLatestDiv, values.toString()) 
+// );
+
+////////////////////
+// withLatestFrom //
+////////////////////
+
+//interval(5000) controls when to sample data from interval(1000)
+// we can say the interval(5000) is the master that takes data from the
+// slave. The slave MUST contain data in order to the emit some values.
+const withLatestFromDiv = document.getElementById('withLatestFromDiv')
+interval(5000).pipe(withLatestFrom(interval(1000))).subscribe(x => addText(withLatestFromDiv, x.toString()));
