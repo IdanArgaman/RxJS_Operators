@@ -1,0 +1,11 @@
+throttleTime(300)
+
+AFTER 1 event has gone through, throttleTime will allow events to go through again AFTER 300ms. But only for events created AFTER the 300ms.
+
+debounceTime(300ms)
+
+Will first wait and then continue, also reset its timer when new value is emitted from the stream.
+
+auditTime(300ms)
+
+Just like debounceTime , auditTime will wait for 300ms and then continues. But it will ALWAYS continue after 300ms and not reset its timer.
